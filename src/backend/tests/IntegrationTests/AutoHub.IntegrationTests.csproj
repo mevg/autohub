@@ -18,4 +18,9 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Api\AutoHub.Api.csproj" />
+    <ProjectReference Include="..\..\src\Application\AutoHub.Application.csproj" />
+    <ProjectReference Include="..\..\src\Infrastructure\AutoHub.Infrastructure.csproj" />
+  </ItemGroup>
 </Project>
