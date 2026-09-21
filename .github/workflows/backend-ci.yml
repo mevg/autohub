@@ -1,0 +1,75 @@
+name: Backend CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, dev, 'feat/*', 'hotfix/*' ]
+    paths:
+    - 'src/backend/**'
+    - '.github/workflows/backend-ci.yml'
+  pull_request:
+    branches: [ main, dev ]
+    paths:
+    - 'src/backend/**'
+
+env:
+  DOTNET_VERSION: '10.0.x'
+  WORKING_DIRECTORY: './src/backend'
+
+jobs:
+  build-and-test:
+    name: Build & Test (.NET 8)
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Necesario para GitVersion más adelante
+
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v1.1.1
+      with:
+        versionSpec: '5.x'
+
+    - name: Determine Version
+      id: gitversion
+      uses: gittools/actions/gitversion/execute@v1.1.1
+      with:
+        useConfigFile: true
+        configFilePath: GitVersion.yml
+
+    - name: Display Generated Version
+      run: |
+        echo "SemVer: ${{ steps.gitversion.outputs.semVer }}"
+        echo "AssemblySemVer: ${{ steps.gitversion.outputs.assemblySemVer }}"
+        echo "InformationalVersion: ${{ steps.gitversion.outputs.informationalVersion }}"
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Restore Dependencies
+      run: dotnet restore ${{ env.WORKING_DIRECTORY }}/AutoHub.sln
+
+    - name: Build Solution with Versioning
+      run: |
+        dotnet build ${{ env.WORKING_DIRECTORY }}/AutoHub.sln \
+          --configuration Release \
+          /p:Version=${{ steps.gitversion.outputs.semVer }} \
+          /p:AssemblyVersion=${{ steps.gitversion.outputs.assemblySemVersion }} \
+          /p:FileVersion=${{ steps.gitversion.outputs.assemblySemFileVer }}
+
+    - name: Run Unit & Integration Tests
+      run: |
+        dotnet test ${{ env.WORKING_DIRECTORY }}/AutoHub.sln \
+          --configuration Release \
+          --no-build \
+          --collect:"XPlat Code Coverage" \
+          --results-directory ${{ env.WORKING_DIRECTORY }}/TestResults
+
+    - name: Upload Test Coverage Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: backend-coverage-results
+        path: ${{ env.WORKING_DIRECTORY }}/TestResults/**/coverage.cobertura.xml

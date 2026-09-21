@@ -1,0 +1,78 @@
+name: Frontend CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, dev, 'feat/*', 'hotfix/*' ]
+    paths:
+    - 'src/frontend/**'
+    - '.github/workflows/frontend-ci.yml'
+  pull_request:
+    branches: [ main, dev ]
+    paths:
+    - 'src/frontend/**'
+
+env:
+  NODE_VERSION: '22.x'
+  WORKING_DIRECTORY: './src/frontend'
+
+jobs:
+  build-and-test:
+    name: Build & Test (Angular + pnpm)
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Necesario para GitVersion más adelante
+
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v1.1.1
+      with:
+        versionSpec: '5.x'
+
+    - name: Determine Version
+      id: gitversion
+      uses: gittools/actions/gitversion/execute@v1.1.1
+      with:
+        useConfigFile: true
+        configFilePath: GitVersion.yml
+
+    - name: Inject Version into Angular Environment
+      working-directory: ${{ env.WORKING_DIRECTORY }}
+      run: |
+        echo "export const environment = { production: true, version: '${{ steps.gitversion.outputs.semVer }}' };" > src/environments/environment.prod.ts
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v3
+      with:
+        version: 9
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'pnpm'
+        cache-dependency-path: '${{ env.WORKING_DIRECTORY }}/pnpm-lock.yaml'
+
+    - name: Install Dependencies
+      working-directory: ${{ env.WORKING_DIRECTORY }}
+      run: pnpm install --frozen-lockfile
+
+    - name: Lint Code
+      working-directory: ${{ env.WORKING_DIRECTORY }}
+      run: pnpm run lint --if-present
+
+    - name: Run Unit Tests
+      working-directory: ${{ env.WORKING_DIRECTORY }}
+      run: pnpm run test -- --watch=false --browsers=ChromeHeadless
+
+    - name: Build Production Bundle
+      working-directory: ${{ env.WORKING_DIRECTORY }}
+      run: pnpm run build -- --configuration production
+
+    - name: Upload Production Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: frontend-dist
+        path: ${{ env.WORKING_DIRECTORY }}/dist/

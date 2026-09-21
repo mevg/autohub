@@ -1,0 +1,25 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Api/">
+    <Project Path="src/Api/AutoHub.Api.csproj" />
+  </Folder>
+  <Folder Name="/src/Application/">
+    <Project Path="src/Application/AutoHub.Application.csproj" />
+  </Folder>
+  <Folder Name="/src/Domain/">
+    <Project Path="src/Domain/AutoHub.Domain.csproj" />
+  </Folder>
+  <Folder Name="/src/Infrastructure/">
+    <Project Path="src/Infrastructure/AutoHub.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/Application/">
+    <Project Path="tests/Application/AutoHub.Application.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Domain/">
+    <Project Path="tests/Domain/AutoHub.Domain.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/tests/IntegrationTests/">
+    <Project Path="tests/IntegrationTests/AutoHub.IntegrationTests.csproj" />
+  </Folder>
+</Solution>

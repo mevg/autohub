@@ -1,0 +1,49 @@
+mode: ContinuousDelivery
+increment: Inherit
+tag-prefix: '[vV]'
+major-version-bump-message: '\b(BREAKING CHANGE|major)\b'
+minor-version-bump-message: '\b(feat|feature)\b'
+patch-version-bump-message: '\b(fix|patch)\b'
+no-bump-message: '\b(none|skip)\b'
+
+branches:
+  main:
+    regex: ^master$|^main$
+    mode: ContinuousDelivery
+    tag: ''
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: true
+
+  develop:
+    regex: ^dev(elop)?(ment)?$
+    mode: ContinuousDeployment
+    tag: alpha
+    increment: Minor
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: true
+    tracks-release-branches: true
+    is-release-branch: false
+
+  feature:
+    regex: ^feat(ure)?[\/-]
+    mode: ContinuousDelivery
+    tag: useBranchName
+    increment: Inherit
+    prevent-increment-of-merged-branch-version: false
+
+  release:
+    regex: ^release[\/-]
+    mode: ContinuousDelivery
+    tag: beta
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+
+  hotfix:
+    regex: ^hotfix[\/-]
+    mode: ContinuousDelivery
+    tag: beta
+    increment: Patch
+    prevent-increment-of-merged-branch-version: false
