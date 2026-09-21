@@ -17,7 +17,7 @@ env:
 
 jobs:
   build-and-test:
-    name: Build & Test (.NET 8)
+    name: Build & Test (.NET 10)
     runs-on: ubuntu-latest
 
     steps:
@@ -50,11 +50,11 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Restore Dependencies
-      run: dotnet restore ${{ env.WORKING_DIRECTORY }}/AutoHub.sln
+      run: dotnet restore ${{ env.WORKING_DIRECTORY }}/AutoHub.slnx
 
     - name: Build Solution with Versioning
       run: |
-        dotnet build ${{ env.WORKING_DIRECTORY }}/AutoHub.sln \
+        dotnet build ${{ env.WORKING_DIRECTORY }}/AutoHub.slnx \
           --configuration Release \
           /p:Version=${{ steps.gitversion.outputs.semVer }} \
           /p:AssemblyVersion=${{ steps.gitversion.outputs.assemblySemVersion }} \
@@ -62,7 +62,7 @@ jobs:
 
     - name: Run Unit & Integration Tests
       run: |
-        dotnet test ${{ env.WORKING_DIRECTORY }}/AutoHub.sln \
+        dotnet test ${{ env.WORKING_DIRECTORY }}/AutoHub.slnx \
           --configuration Release \
           --no-build \
           --collect:"XPlat Code Coverage" \

@@ -6,7 +6,11 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "test:ci": "ng test --watch=false",
+    "lint": "prettier --check .",
+    "lint:fix": "prettier --write .",
+    "format": "prettier --write ."
   },
   "private": true,
   "packageManager": "pnpm@11.5.2",

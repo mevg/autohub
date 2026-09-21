@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
-using Application;
-using Application.Common.Behaviors;
+using AutoHub.Application.Common.Behaviors;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;

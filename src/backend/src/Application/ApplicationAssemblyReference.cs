@@ -1,3 +1,3 @@
-namespace Application;
+namespace AutoHub.Application;
 
 public sealed class ApplicationAssemblyReference;
