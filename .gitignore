@@ -60,3 +60,4 @@ obj/
 # Ignore all local history of files
 .history
 .ionide
+*.log
