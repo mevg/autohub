@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 
 namespace AutoHub.Infrastructure.Persistence;
 
