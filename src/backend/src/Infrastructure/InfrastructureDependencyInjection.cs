@@ -1,9 +1,4 @@
-﻿using AutoHub.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace AutoHub.Infrastructure;
+﻿namespace AutoHub.Infrastructure;
 
 public static class InfrastructureDependencyInjection
 {
