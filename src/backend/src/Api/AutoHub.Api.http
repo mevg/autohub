@@ -1,6 +1,22 @@
 @AutoHub.Api_HostAddress = http://localhost:5116
 
-GET {{AutoHub.Api_HostAddress}}/weatherforecast/
+### Login (admin de desarrollo: admin@autohub.local / Admin123!)
+# @name login
+POST {{AutoHub.Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@autohub.local",
+  "password": "Admin123!"
+}
+
+###
+
+@token = {{login.response.body.$.token}}
+
+### Usuario actual (requiere Bearer)
+GET {{AutoHub.Api_HostAddress}}/api/auth/me
+Authorization: Bearer {{token}}
 Accept: application/json
 
 ###

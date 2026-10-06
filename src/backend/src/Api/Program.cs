@@ -1,3 +1,6 @@
+using AutoHub.Api.Endpoints;
+using AutoHub.Infrastructure.Persistence.Seed;
+
 var builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration()
@@ -20,6 +23,8 @@ try
         .AddInfrastructure(builder.Configuration);
     var app = builder.Build();
 
+    await DatabaseInitializer.MigrateAndSeedAsync(app.Services, app.Configuration);
+
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
@@ -28,6 +33,10 @@ try
 
     app.UseHttpsRedirection();
 
+    app.UseAuthentication();
+    app.UseAuthorization();
+
+    app.MapAuthEndpoints();
 
     app.Run();
 
@@ -41,3 +50,5 @@ finally
 {
     Log.CloseAndFlush();
 }
+
+public partial class Program { }
