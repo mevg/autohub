@@ -11,6 +11,14 @@ public static class InfrastructureDependencyInjection
 
         services.AddSingleton<ISqlConnectionFactory>(new NpgsqlConnectionFactory(connectionString));
         services.AddScoped<IUserQueries, DapperUserQueries>();
+        services.AddScoped<IBrandingQueries, DapperBrandingQueries>();
+        services.AddScoped<IBrandingStore, EfBrandingStore>();
+        services.AddSingleton<IBrandAssetStorage>(sp =>
+        {
+            var env = sp.GetRequiredService<IWebHostEnvironment>();
+            var webRoot = env.WebRootPath ?? Path.Combine(env.ContentRootPath, "wwwroot");
+            return new FileBrandAssetStorage(webRoot);
+        });
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 
@@ -32,7 +40,8 @@ public static class InfrastructureDependencyInjection
                     ClockSkew = TimeSpan.FromMinutes(1)
                 };
             });
-        services.AddAuthorization();
+        services.AddAuthorizationBuilder()
+            .AddPolicy("Admin", policy => policy.RequireRole("Admin"));
 
         return services;
     }

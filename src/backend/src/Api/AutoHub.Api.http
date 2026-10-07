@@ -19,4 +19,20 @@ GET {{AutoHub.Api_HostAddress}}/api/auth/me
 Authorization: Bearer {{token}}
 Accept: application/json
 
+### Branding público (sin auth)
+GET {{AutoHub.Api_HostAddress}}/api/settings/branding
+Accept: application/json
+
+### Actualizar branding (requiere rol Admin)
+PUT {{AutoHub.Api_HostAddress}}/api/settings/branding
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "appName": "Mi Tienda",
+  "primaryLight": "#71DDFF",
+  "primary": "#4DC4FF",
+  "primaryDark": "#45B0E5"
+}
+
 ###

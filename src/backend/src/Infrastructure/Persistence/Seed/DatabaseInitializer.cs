@@ -19,6 +19,13 @@ public static class DatabaseInitializer
         await db.Database.MigrateAsync();
 
         var logger = provider.GetRequiredService<ILogger<AppDbContext>>();
+
+        if (!await db.Branding.AnyAsync())
+        {
+            db.Branding.Add(new Branding());
+            await db.SaveChangesAsync();
+            logger.LogInformation("Branding inicial creado con valores por defecto.");
+        }
         var email = configuration["SeedAdmin:Email"]?.Trim().ToLowerInvariant();
         var password = configuration["SeedAdmin:Password"];
 

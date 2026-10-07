@@ -1,7 +1,15 @@
 using AutoHub.Api.Endpoints;
 using AutoHub.Infrastructure.Persistence.Seed;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// wwwroot debe existir antes del build para que WebRootPath se resuelva
+// y UseStaticFiles + FileBrandAssetStorage usen la misma raíz.
+var wwwroot = Path.Combine(builder.Environment.ContentRootPath, "wwwroot");
+Directory.CreateDirectory(wwwroot);
+builder.Environment.WebRootPath = wwwroot;
+builder.Environment.WebRootFileProvider = new PhysicalFileProvider(wwwroot);
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
@@ -33,10 +41,13 @@ try
 
     app.UseHttpsRedirection();
 
+    app.UseStaticFiles();
+
     app.UseAuthentication();
     app.UseAuthorization();
 
     app.MapAuthEndpoints();
+    app.MapSettingsEndpoints();
 
     app.Run();
 
