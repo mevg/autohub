@@ -1,0 +1,34 @@
+{
+  // Requiere: .NET 10 SDK, Node 22 + pnpm, Postgres local
+  // (docker o Host=localhost:5432 con autohub_db/autohub_user).
+  // El front usa proxy.conf.json -> http://localhost:5116 (ver src/frontend/proxy.conf.json).
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": ".NET: AutoHub API",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "dotnet: build backend",
+      "program": "${workspaceFolder}/src/backend/src/Api/bin/Debug/net10.0/AutoHub.Api.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/backend/src/Api",
+      "env": { "ASPNETCORE_ENVIRONMENT": "Development" },
+      "launchBrowser": { "enabled": false }
+    },
+    {
+      "name": "Angular: serve + debug",
+      "type": "chrome",
+      "request": "launch",
+      "preLaunchTask": "frontend: serve",
+      "url": "http://localhost:4200",
+      "webRoot": "${workspaceFolder}/src/frontend/src",
+      "sourceMaps": true
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full stack: API + Angular",
+      "configurations": [".NET: AutoHub API", "Angular: serve + debug"]
+    }
+  ]
+}
