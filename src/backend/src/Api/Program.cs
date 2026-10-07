@@ -1,6 +1,7 @@
 using AutoHub.Api.Endpoints;
 using AutoHub.Infrastructure.Persistence.Seed;
 using Microsoft.Extensions.FileProviders;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,13 @@ try
     // Add services to the container.
     // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
     builder.Services.AddOpenApi();
+    var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+        ?? ["http://localhost:4200"];
+    builder.Services.AddCors(options => options.AddPolicy("Frontend", policy => policy
+        .WithOrigins(corsOrigins)
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials()));
     builder.Services
         .AddApplication()
         .AddInfrastructure(builder.Configuration);
@@ -37,9 +45,12 @@ try
     if (app.Environment.IsDevelopment())
     {
         app.MapOpenApi();
+        app.MapScalarApiReference();
     }
 
     app.UseHttpsRedirection();
+
+    app.UseCors("Frontend");
 
     app.UseStaticFiles();
 
