@@ -1,1 +1,70 @@
-/* You can add global styles to this file, and also import other style files */
+@use 'tailwindcss';
+
+/* Paleta base de marca (estatica, compilada por Tailwind). */
+@theme {
+  --color-brand-red-light: #f17171;
+  --color-brand-red: #ee4040;
+  --color-brand-red-dark: #d64545;
+
+  --color-brand-sky-light: #71ddff;
+  --color-brand-sky: #4dc4ff;
+  --color-brand-sky-dark: #45b0e5;
+
+  --color-brand-orange-light: #ffa071;
+  --color-brand-orange: #ff8840;
+  --color-brand-orange-dark: #e57a45;
+
+  --color-brand-blue-light: #7ea9ff;
+  --color-brand-blue: #5e94ff;
+  --color-brand-blue-dark: #5485e5;
+
+  --color-brand-yellow-light: #ffdd71;
+  --color-brand-yellow: #ffc440;
+  --color-brand-yellow-dark: #e5b045;
+
+  --color-brand-purple-light: #b38dff;
+  --color-brand-purple: #a071ff;
+  --color-brand-purple-dark: #9065e5;
+
+  --color-brand-green-light: #a2d471;
+  --color-brand-green: #8bc940;
+  --color-brand-green-dark: #7db545;
+
+  --color-brand-pink-light: #ff71b7;
+  --color-brand-pink: #ff4da5;
+  --color-brand-pink-dark: #e54594;
+
+  --color-brand-teal-light: #71e2dd;
+  --color-brand-teal: #4ddbc4;
+  --color-brand-teal-dark: #45c5b0;
+
+  --color-brand-gray-light: #a2adb8;
+  --color-brand-gray: #8b98a6;
+  --color-brand-gray-dark: #7d8995;
+}
+
+/*
+ * Variables dinamicas: las reescribe BrandingService en runtime con lo que
+ * devuelva GET /api/settings/branding (o los defaults si no hay backend).
+ * `primary` = turquesa medio por defecto; `danger` = rojo medio (alertas/errores).
+ */
+:root {
+  --brand-primary-light: #71e2dd;
+  --brand-primary: #4ddbc4;
+  --brand-primary-dark: #45c5b0;
+
+  --brand-danger-light: #f17171;
+  --brand-danger: #ee4040;
+  --brand-danger-dark: #d64545;
+}
+
+/* `inline` genera utilidades que apuntan al var() -> se pueden cambiar en runtime. */
+@theme inline {
+  --color-primary-light: var(--brand-primary-light);
+  --color-primary: var(--brand-primary);
+  --color-primary-dark: var(--brand-primary-dark);
+
+  --color-danger-light: var(--brand-danger-light);
+  --color-danger: var(--brand-danger);
+  --color-danger-dark: var(--brand-danger-dark);
+}

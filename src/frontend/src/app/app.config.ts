@@ -1,10 +1,14 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
+import { BRANDING_PROVIDERS } from './core/branding/branding.providers';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes)
-  ]
+    provideRouter(routes),
+    provideHttpClient(),
+    BRANDING_PROVIDERS,
+  ],
 };

@@ -3,38 +3,17 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "type": "npm",
-      "script": "start",
+      "label": "frontend: serve (pnpm)",
+      "type": "shell",
+      "command": "pnpm start",
       "isBackground": true,
       "problemMatcher": {
         "owner": "typescript",
         "pattern": "$tsc",
         "background": {
           "activeOnStart": true,
-          "beginsPattern": {
-            "regexp": "Changes detected"
-          },
-          "endsPattern": {
-            "regexp": "bundle generation (complete|failed)"
-          }
-        }
-      }
-    },
-    {
-      "type": "npm",
-      "script": "test",
-      "isBackground": true,
-      "problemMatcher": {
-        "owner": "typescript",
-        "pattern": "$tsc",
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": {
-            "regexp": "Changes detected"
-          },
-          "endsPattern": {
-            "regexp": "bundle generation (complete|failed)"
-          }
+          "beginsPattern": "Building...",
+          "endsPattern": "bundle generation (complete|failed)"
         }
       }
     }
