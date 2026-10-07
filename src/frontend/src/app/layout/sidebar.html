@@ -1,0 +1,46 @@
+<!-- Overlay móvil -->
+@if (open()) {
+  <div
+    class="fixed inset-0 z-30 bg-black/40 lg:hidden"
+    (click)="closed.emit()"
+    aria-hidden="true"
+  ></div>
+}
+
+<aside
+  class="fixed inset-y-0 left-0 z-40 flex h-dvh w-64 -translate-x-full flex-col bg-gray-900 text-white transition-transform lg:sticky lg:top-0 lg:translate-x-0"
+  [class.translate-x-0]="open()"
+  aria-label="Menú principal"
+>
+  <div class="flex h-16 items-center gap-2 border-b border-white/10 px-4">
+    @if (logoUrl()) {
+      <img [src]="logoUrl()" [alt]="appName()" class="h-8 w-8 object-contain" />
+    } @else {
+      <span
+        class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-lg font-bold"
+      >
+        {{ appName().slice(0, 1) }}
+      </span>
+    }
+    <span class="truncate text-lg font-bold">{{ appName() }}</span>
+  </div>
+
+  <nav class="flex flex-1 flex-col gap-1 p-3">
+    @for (item of items(); track item.route) {
+      <a
+        [routerLink]="item.route"
+        routerLinkActive="bg-primary text-white"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closed.emit()"
+        class="rounded-lg px-3 py-2 text-sm font-medium text-gray-200 transition hover:bg-white/10"
+      >
+        {{ item.label }}
+      </a>
+    }
+  </nav>
+
+  <footer class="border-t border-white/10 px-4 py-3 text-xs text-gray-400">
+    <p>v{{ version() }}</p>
+    <p>Develop by MEVG</p>
+  </footer>
+</aside>

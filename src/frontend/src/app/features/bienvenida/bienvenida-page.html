@@ -1,0 +1,47 @@
+<div class="mx-auto max-w-2xl">
+  <div class="rounded-2xl bg-white p-6 shadow-sm lg:p-8">
+    <div class="mb-4 flex items-center gap-3">
+      @if (branding().logoUrl) {
+        <img
+          [src]="branding().logoUrl"
+          [alt]="branding().appName"
+          class="h-12 w-12 object-contain"
+        />
+      } @else {
+        <span
+          class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-2xl font-bold text-white"
+        >
+          {{ branding().appName.slice(0, 1) }}
+        </span>
+      }
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">Hola, {{ user()?.fullName }}</h1>
+        <p class="text-sm text-gray-500">
+          Bienvenido a {{ branding().appName }} · Rol: {{ user()?.role }}
+        </p>
+      </div>
+    </div>
+
+    <p class="text-sm text-gray-600">
+      Desde aquí podrás gestionar el catálogo, las operaciones y la configuración de la aplicación a
+      medida que los módulos estén disponibles.
+    </p>
+
+    <div class="mt-6 grid gap-3 sm:grid-cols-2">
+      <a
+        routerLink="/bienvenida"
+        class="rounded-xl border border-gray-200 p-4 transition hover:border-primary hover:shadow-sm"
+      >
+        <p class="font-semibold text-gray-900">Mi sesión</p>
+        <p class="text-sm text-gray-500">{{ user()?.email }}</p>
+      </a>
+      <div class="rounded-xl border border-gray-200 p-4">
+        <p class="font-semibold text-gray-900">Color principal</p>
+        <p class="mt-1 flex items-center gap-2 text-sm text-gray-500">
+          <span class="inline-block h-4 w-4 rounded bg-primary"></span>
+          {{ branding().primary }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

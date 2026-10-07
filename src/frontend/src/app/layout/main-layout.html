@@ -1,0 +1,21 @@
+<div class="flex min-h-dvh bg-gray-50">
+  <app-sidebar
+    [appName]="branding().appName"
+    [logoUrl]="branding().logoUrl"
+    [version]="version"
+    [open]="sidebarOpen()"
+    (closed)="closeSidebar()"
+  />
+
+  <div class="flex min-w-0 flex-1 flex-col">
+    <app-header
+      [fullName]="user()?.fullName ?? ''"
+      [role]="user()?.role ?? ''"
+      (menuToggle)="toggleSidebar()"
+      (logout)="onLogout()"
+    />
+    <main class="flex-1 p-4 lg:p-6">
+      <router-outlet />
+    </main>
+  </div>
+</div>
