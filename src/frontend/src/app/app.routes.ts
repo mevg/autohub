@@ -18,6 +18,18 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/bienvenida/bienvenida-page').then((m) => m.BienvenidaPage),
       },
+      {
+        path: 'vehiculos',
+        loadComponent: () =>
+          import('./features/vehicles/vehicles-page/vehicles-page').then((m) => m.VehiclesPage),
+      },
+      {
+        path: 'vehiculos/:id',
+        loadComponent: () =>
+          import('./features/vehicles/vehicle-detail-page/vehicle-detail-page').then(
+            (m) => m.VehicleDetailPage,
+          ),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

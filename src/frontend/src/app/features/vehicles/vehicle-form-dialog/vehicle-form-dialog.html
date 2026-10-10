@@ -1,0 +1,140 @@
+<div
+  class="dialog-enter fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-label]="title()"
+  (click)="cancel.emit()"
+>
+  <div
+    class="max-h-[92dvh] w-full max-w-lg overflow-y-auto rounded-t-2xl bg-white p-5 sm:rounded-2xl sm:p-6"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="mb-4 flex items-center justify-between">
+      <h2 class="text-lg font-bold text-gray-900">{{ title() }}</h2>
+      <button
+        type="button"
+        (click)="cancel.emit()"
+        aria-label="Cerrar"
+        class="rounded-lg p-1.5 text-gray-500 transition hover:bg-gray-100"
+      >
+        ✕
+      </button>
+    </div>
+
+    <form
+      [formGroup]="form"
+      (ngSubmit)="form.valid && !pending() && save.emit(form.getRawValue())"
+      class="grid grid-cols-1 gap-3 sm:grid-cols-2"
+      novalidate
+    >
+      <label class="flex flex-col gap-1 text-sm font-medium text-gray-700 sm:col-span-2">
+        VIN (17 caracteres)
+        <input
+          formControlName="vin"
+          placeholder="1HGCM82633A123456"
+          class="rounded-lg border border-gray-300 px-3 py-2 font-mono uppercase outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
+        />
+      </label>
+
+      <label class="flex flex-col gap-1 text-sm font-medium text-gray-700">
+        Marca
+        <input
+          formControlName="make"
+          placeholder="Toyota"
+          class="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
+        />
+      </label>
+
+      <label class="flex flex-col gap-1 text-sm font-medium text-gray-700">
+        Modelo
+        <input
+          formControlName="model"
+          placeholder="Corolla"
+          class="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
+        />
+      </label>
+
+      <label class="flex flex-col gap-1 text-sm font-medium text-gray-700">
+        Año
+        <input
+          type="number"
+          formControlName="year"
+          class="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
+        />
+      </label>
+
+      <label class="flex flex-col gap-1 text-sm font-medium text-gray-700">
+        Precio (MXN)
+        <input
+          type="number"
+          formControlName="price"
+          min="1"
+          class="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
+        />
+      </label>
+
+      <label class="flex flex-col gap-1 text-sm font-medium text-gray-700 sm:col-span-2">
+        Kilometraje
+        <input
+          type="number"
+          formControlName="mileage"
+          min="0"
+          class="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
+        />
+      </label>
+
+      <label class="flex flex-col gap-1 text-sm font-medium text-gray-700">
+        Transmisión
+        <input
+          formControlName="transmission"
+          placeholder="Automática"
+          class="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
+        />
+      </label>
+
+      <label class="flex flex-col gap-1 text-sm font-medium text-gray-700">
+        Combustible
+        <input
+          formControlName="fuelType"
+          placeholder="Gasolina"
+          class="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
+        />
+      </label>
+
+      <label class="flex flex-col gap-1 text-sm font-medium text-gray-700 sm:col-span-2">
+        Descripción
+        <textarea
+          formControlName="description"
+          rows="2"
+          class="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
+        ></textarea>
+      </label>
+
+      @if (error()) {
+        <p
+          role="alert"
+          class="rounded-lg bg-danger/10 px-3 py-2 text-sm font-medium text-danger sm:col-span-2"
+        >
+          {{ error() }}
+        </p>
+      }
+
+      <div class="flex justify-end gap-2 sm:col-span-2">
+        <button
+          type="button"
+          (click)="cancel.emit()"
+          class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          [disabled]="form.invalid || pending()"
+          class="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {{ pending() ? 'Guardando…' : 'Guardar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
