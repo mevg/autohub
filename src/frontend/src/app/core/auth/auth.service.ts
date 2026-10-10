@@ -21,7 +21,9 @@ function readSession(): StoredSession | null {
 export function decodeTokenPayload(token: string): { exp?: number } | null {
   try {
     const payload = token.split('.')[1];
-    const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+    let base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+    // atob exige largo múltiplo de 4; el JWT omite el padding.
+    base64 += '='.repeat((4 - (base64.length % 4)) % 4);
     return JSON.parse(atob(base64));
   } catch {
     return null;
@@ -74,6 +76,13 @@ export class AuthService {
     const payload = decodeTokenPayload(token);
     if (!payload?.exp) return false;
     return payload.exp * 1000 - EXPIRY_SKEW_S * 1000 > Date.now();
+  }
+
+  /** True solo si el token decodifica y su `exp` ya pasó. */
+  isTokenExpired(): boolean {
+    const token = this.session()?.token;
+    const exp = token ? decodeTokenPayload(token)?.exp : undefined;
+    return exp != null && exp * 1000 <= Date.now();
   }
 
   private setSession(session: StoredSession): void {

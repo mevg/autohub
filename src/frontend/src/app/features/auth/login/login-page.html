@@ -17,6 +17,15 @@
       <h1 class="text-xl font-bold text-gray-900">{{ branding().appName }}</h1>
     </div>
 
+    @if (expiredNotice) {
+      <p
+        role="status"
+        class="mb-4 rounded-lg bg-brand-yellow/20 px-3 py-2 text-sm font-medium text-brand-yellow-dark"
+      >
+        Tu sesión expiró. Ingresa de nuevo.
+      </p>
+    }
+
     <app-login-form
       [form]="form"
       [pending]="pending()"

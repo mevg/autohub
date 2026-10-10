@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
-import { AuthService } from './auth.service';
+import { AuthService, decodeTokenPayload } from './auth.service';
 
 /** JWT falso con `exp` configurable (segundos desde epoch). */
 export function fakeJwt(exp: number): string {
@@ -61,6 +61,25 @@ describe('AuthService', () => {
   it('hasValidToken is false when expired', () => {
     seedSession(fakeJwt(PAST));
     expect(TestBed.inject(AuthService).hasValidToken()).toBe(false);
+  });
+
+  it('decodes payloads without padding', () => {
+    const unpadded = btoa(JSON.stringify({ exp: 999 })).replace(/=+$/, '');
+    expect(unpadded.length % 4).not.toBe(0); // garantiza el caso que reventaba atob
+    expect(decodeTokenPayload(`header.${unpadded}.sig`)).toEqual({ exp: 999 });
+    expect(decodeTokenPayload('not-a-jwt')).toBeNull();
+  });
+
+  it('isTokenExpired distinguishes expired from missing', () => {
+    expect(service.isTokenExpired()).toBe(false);
+
+    localStorage.clear();
+    seedSession(fakeJwt(PAST));
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+    });
+    expect(TestBed.inject(AuthService).isTokenExpired()).toBe(true);
   });
 
   it('logout clears storage and signals', () => {

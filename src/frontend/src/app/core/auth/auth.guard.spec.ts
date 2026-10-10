@@ -21,25 +21,27 @@ describe('auth guards', () => {
     localStorage.clear();
   });
 
+  const state = (url: string) => ({ url }) as never;
+
   it('authGuard redirects to /login without session', async () => {
     const result = await TestBed.runInInjectionContext(() =>
-      authGuard(null as never, null as never),
+      authGuard(null as never, state('/vehiculos')),
     );
-    expect(result.toString()).toBe('/login');
+    expect(result.toString()).toBe('/login?returnUrl=%2Fvehiculos&reason=auth');
   });
 
   it('authGuard redirects to /login with expired token', async () => {
     seedSession(fakeJwt(PAST));
     const result = await TestBed.runInInjectionContext(() =>
-      authGuard(null as never, null as never),
+      authGuard(null as never, state('/vehiculos')),
     );
-    expect(result.toString()).toBe('/login');
+    expect(result.toString()).toBe('/login?returnUrl=%2Fvehiculos&reason=expired');
   });
 
   it('authGuard allows with valid session', async () => {
     seedSession();
     const result = await TestBed.runInInjectionContext(() =>
-      authGuard(null as never, null as never),
+      authGuard(null as never, state('/vehiculos')),
     );
     expect(result).toBe(true);
   });
