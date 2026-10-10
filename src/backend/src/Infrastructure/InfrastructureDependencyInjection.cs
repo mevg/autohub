@@ -13,12 +13,15 @@ public static class InfrastructureDependencyInjection
         services.AddScoped<IUserQueries, DapperUserQueries>();
         services.AddScoped<IBrandingQueries, DapperBrandingQueries>();
         services.AddScoped<IBrandingStore, EfBrandingStore>();
-        services.AddSingleton<IBrandAssetStorage>(sp =>
+        services.AddScoped<IVehicleQueries, DapperVehicleQueries>();
+        services.AddScoped<IVehicleStore, EfVehicleStore>();
+        services.AddSingleton<ILocalFileStorage>(sp =>
         {
             var env = sp.GetRequiredService<IWebHostEnvironment>();
             var webRoot = env.WebRootPath ?? Path.Combine(env.ContentRootPath, "wwwroot");
-            return new FileBrandAssetStorage(webRoot);
+            return new LocalFileStorage(webRoot);
         });
+        services.AddSingleton<IBrandAssetStorage, FileBrandAssetStorage>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 

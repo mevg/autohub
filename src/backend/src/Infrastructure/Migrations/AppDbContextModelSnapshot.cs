@@ -135,7 +135,8 @@ namespace AutoHub.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Description")
-                        .HasColumnType("text");
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.Property<string>("FuelType")
                         .IsRequired()
@@ -201,7 +202,8 @@ namespace AutoHub.Infrastructure.Migrations
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<Guid>("VehicleId")
                         .HasColumnType("uuid");
@@ -210,7 +212,7 @@ namespace AutoHub.Infrastructure.Migrations
 
                     b.HasIndex("VehicleId");
 
-                    b.ToTable("VehicleImages");
+                    b.ToTable("VehicleImages", (string)null);
                 });
 
             modelBuilder.Entity("AutoHub.Domain.Entities.Vehicle", b =>

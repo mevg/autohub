@@ -59,6 +59,7 @@ try
 
     app.MapAuthEndpoints();
     app.MapSettingsEndpoints();
+    app.MapVehicleEndpoints();
 
     app.Run();
 

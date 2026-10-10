@@ -23,6 +23,9 @@ public class VehicleConfiguration : IEntityTypeConfiguration<Vehicle>
             .HasMaxLength(50)
             .IsRequired();
 
+        builder.Property(v => v.Year)
+            .IsRequired();
+
         builder.Property(v => v.Price)
             .HasColumnType("decimal(18,2)")
             .IsRequired();
@@ -33,6 +36,12 @@ public class VehicleConfiguration : IEntityTypeConfiguration<Vehicle>
 
         builder.Property(v => v.FuelType)
             .HasMaxLength(30)
+            .IsRequired();
+
+        builder.Property(v => v.Description)
+            .HasMaxLength(1000);
+
+        builder.Property(v => v.CreatedAt)
             .IsRequired();
 
         builder.Property(v => v.Status)
