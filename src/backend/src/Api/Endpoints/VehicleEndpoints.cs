@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using AutoHub.Application.Common.Exceptions;
+using AutoHub.Application.Features.Vehicles;
 using AutoHub.Application.Features.Vehicles.Commands.ArchiveVehicle;
 using AutoHub.Application.Features.Vehicles.Commands.CreateVehicle;
 using AutoHub.Application.Features.Vehicles.Commands.RemoveVehicleImage;
@@ -134,7 +135,10 @@ public static class VehicleEndpoints
             try
             {
                 var result = await sender.Send(
-                    new UploadVehicleImageCommand(id, file.ContentType, buffer.ToArray()), ct);
+                    new UploadVehicleImageCommand(
+                        id,
+                        ImageContentTypeSniffer.Sniff(file.ContentType, buffer.ToArray()),
+                        buffer.ToArray()), ct);
                 return Results.Ok(result);
             }
             catch (ValidationException ex)

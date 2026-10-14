@@ -16,6 +16,7 @@ const ITEM: VehicleListItem = {
   mileage: 15000,
   status: 'Available',
   imageCount: 0,
+  coverImageUrl: null,
 };
 
 const EMPTY_PAGE = { items: [], page: 1, pageSize: 12, totalCount: 0 };

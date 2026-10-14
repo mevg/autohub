@@ -4,11 +4,20 @@
   [style.animation-delay.ms]="index() * 60"
 >
   <div
-    class="relative flex h-40 items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200"
+    class="relative flex h-40 items-center justify-center overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200"
   >
-    <span class="text-4xl font-black tracking-tight text-gray-300">
-      {{ vehicle().make.slice(0, 1) }}{{ vehicle().model.slice(0, 1) }}
-    </span>
+    @if (vehicle().coverImageUrl) {
+      <img
+        [src]="vehicle().coverImageUrl"
+        [alt]="vehicle().make + ' ' + vehicle().model"
+        loading="lazy"
+        class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+      />
+    } @else {
+      <span class="text-4xl font-black tracking-tight text-gray-300">
+        {{ vehicle().make.slice(0, 1) }}{{ vehicle().model.slice(0, 1) }}
+      </span>
+    }
     <span class="absolute left-3 top-3">
       <app-status-badge [status]="vehicle().status" />
     </span>

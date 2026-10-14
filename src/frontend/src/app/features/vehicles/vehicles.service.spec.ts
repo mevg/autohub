@@ -14,6 +14,7 @@ const ITEM: VehicleListItem = {
   mileage: 15000,
   status: 'Available',
   imageCount: 2,
+  coverImageUrl: null,
 };
 
 describe('VehiclesService', () => {

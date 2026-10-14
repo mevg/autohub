@@ -48,7 +48,15 @@ try
         app.MapScalarApiReference();
     }
 
-    app.UseHttpsRedirection();
+    // En Development no se redirige http->https: los navegadores descartan el
+    // header Authorization al seguir el 307 a otro esquema, lo que convertía
+    // cada llamada autenticada en 401 + logout silencioso. El perfil https ya
+    // escucha en ambos puertos (7086+5116), así el proxy del front funciona
+    // con cualquier perfil. En producción la redirección la hace la infra.
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseHttpsRedirection();
+    }
 
     app.UseCors("Frontend");
 

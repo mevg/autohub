@@ -196,8 +196,37 @@ public sealed class VehicleApiTests : IAsyncLifetime
         var asset = await _client.GetAsync(uploadBody.GetProperty("imageUrl").GetString()!);
         asset.StatusCode.Should().Be(HttpStatusCode.OK);
 
+        var list = await _client.GetAsync("/api/vehicles?search=444444");
+        var item = JsonDocument.Parse(await list.Content.ReadAsStringAsync())
+            .RootElement.GetProperty("items").EnumerateArray().First();
+        item.GetProperty("imageCount").GetInt32().Should().Be(1);
+        item.GetProperty("coverImageUrl").GetString().Should().Be(uploadBody.GetProperty("imageUrl").GetString());
+
         var remove = await _client.DeleteAsync($"/api/vehicles/{id}/images/{imageId}");
         remove.StatusCode.Should().Be(HttpStatusCode.NoContent);
+    }
+
+    [Fact]
+    public async Task Upload_with_generic_content_type_sniffs_webp()
+    {
+        var id = await CreateVehicleAsync("1HGCM82633A666666");
+
+        using var content = new MultipartFormDataContent();
+        var webp = new byte[] { 0x52, 0x49, 0x46, 0x46, 0, 0, 0, 0, 0x57, 0x45, 0x42, 0x50 };
+        var file = new ByteArrayContent(webp);
+        file.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+        content.Add(file, "file", "foto.webp");
+
+        var upload = await _client.PostAsync($"/api/vehicles/{id}/images", content);
+
+        upload.StatusCode.Should().Be(HttpStatusCode.OK);
+        var url = JsonDocument.Parse(await upload.Content.ReadAsStringAsync())
+            .RootElement.GetProperty("imageUrl").GetString()!;
+        url.Should().EndWith(".webp");
+
+        var asset = await _client.GetAsync(url);
+        asset.StatusCode.Should().Be(HttpStatusCode.OK);
+        asset.Content.Headers.ContentType?.MediaType.Should().Be("image/webp");
     }
 
     [Fact]

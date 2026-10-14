@@ -15,7 +15,8 @@ public record VehicleListItemDto(
     decimal Price,
     int Mileage,
     string Status,
-    int ImageCount
+    int ImageCount,
+    string? CoverImageUrl
 );
 
 public record VehicleDto(

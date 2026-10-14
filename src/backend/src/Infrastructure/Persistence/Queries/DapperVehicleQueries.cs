@@ -116,6 +116,8 @@ public sealed class DapperVehicleQueries(ISqlConnectionFactory connectionFactory
                    v."Mileage" AS "Mileage",
                    v."Status" AS "Status",
                    (SELECT COUNT(*)::int FROM "VehicleImages" i WHERE i."VehicleId" = v."Id") AS "ImageCount",
+                   (SELECT i."ImageUrl" FROM "VehicleImages" i
+                    WHERE i."VehicleId" = v."Id" ORDER BY i."DisplayOrder" LIMIT 1) AS "CoverImageUrl",
                    COUNT(*) OVER()::int AS "TotalCount"
             FROM "Vehicles" v
             {where}
@@ -130,7 +132,7 @@ public sealed class DapperVehicleQueries(ISqlConnectionFactory connectionFactory
 
         var items = rows.Select(r => new VehicleListItemDto(
             r.Id, r.Vin, r.Make, r.Model, r.Year, r.Price, r.Mileage,
-            ((VehicleStatus)r.Status).ToString(), r.ImageCount)).ToList();
+            ((VehicleStatus)r.Status).ToString(), r.ImageCount, r.CoverImageUrl)).ToList();
 
         return new PagedResult<VehicleListItemDto>(items, page, pageSize, rows.FirstOrDefault()?.TotalCount ?? 0);
     }
@@ -156,5 +158,5 @@ public sealed class DapperVehicleQueries(ISqlConnectionFactory connectionFactory
 
     private sealed record ListRow(
         Guid Id, string Vin, string Make, string Model, int Year, decimal Price, int Mileage,
-        int Status, int ImageCount, int TotalCount);
+        int Status, int ImageCount, string? CoverImageUrl, int TotalCount);
 }

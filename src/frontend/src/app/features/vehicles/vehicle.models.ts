@@ -15,9 +15,10 @@ export interface VehicleListItem {
   mileage: number;
   status: string;
   imageCount: number;
+  coverImageUrl: string | null;
 }
 
-export interface VehicleDetail extends Omit<VehicleListItem, 'imageCount'> {
+export interface VehicleDetail extends Omit<VehicleListItem, 'imageCount' | 'coverImageUrl'> {
   transmission: string;
   fuelType: string;
   description: string | null;
