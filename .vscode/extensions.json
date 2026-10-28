@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "ms-dotnettools.csharp",
+    "ms-azuretools.vscode-docker",
     "angular.ng-template",
     "esbenp.prettier-vscode",
     "vitest.explorer"

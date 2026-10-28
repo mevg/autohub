@@ -53,7 +53,10 @@ try
     // cada llamada autenticada en 401 + logout silencioso. El perfil https ya
     // escucha en ambos puertos (7086+5116), así el proxy del front funciona
     // con cualquier perfil. En producción la redirección la hace la infra.
-    if (!app.Environment.IsDevelopment())
+    // Detrás del proxy http del compose no hay TLS que redirigir: se desactiva
+    // con HttpsRedirection__Enabled=false (por defecto sigue activa).
+    if (!app.Environment.IsDevelopment()
+        && app.Configuration.GetValue("HttpsRedirection:Enabled", true))
     {
         app.UseHttpsRedirection();
     }
