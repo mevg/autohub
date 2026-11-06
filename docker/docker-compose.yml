@@ -19,6 +19,7 @@ services:
       retries: 10
 
   backend:
+    image: ghcr.io/mevg/autohub-backend:${IMAGE_TAG:-dev}
     build:
       context: ..
       dockerfile: docker/Dockerfile.backend
@@ -45,6 +46,7 @@ services:
     restart: unless-stopped
 
   frontend:
+    image: ghcr.io/mevg/autohub-frontend:${IMAGE_TAG:-dev}
     build:
       context: ..
       dockerfile: docker/Dockerfile.frontend
