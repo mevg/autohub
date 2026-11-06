@@ -62,6 +62,10 @@ obj/
 .ionide
 *.log
 
+### Deploy secrets ###
+# Secretos de producción del stack Docker (nunca versionar).
+docker/.env
+
 ### AutoHub uploads ###
 # Los archivos subidos en runtime no se versionan (se persisten vía volumen Docker).
 src/backend/src/Api/wwwroot/vehicles/*

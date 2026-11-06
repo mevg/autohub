@@ -51,7 +51,8 @@ services:
       args:
         VERSION: ${VERSION:-0.0.0}
     ports:
-      - "8080:80"
+      # Solo accesible desde el host: nginx del Droplet publica el 80.
+      - "127.0.0.1:8080:80"
     depends_on:
       - backend
     restart: unless-stopped
