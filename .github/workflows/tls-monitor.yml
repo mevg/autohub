@@ -1,0 +1,75 @@
+name: TLS expiry monitor
+
+# El certificado del Droplet es de 160 horas (perfil shortlived de Let's Encrypt
+# para direcciones IP). Si la renovacion automatica falla, hay que enterarse
+# antes de que caduque: este workflow falla a proposito cuando quedan < 3 dias.
+#
+# NOTA: los workflows programados solo se ejecutan desde la rama por defecto.
+# Mientras el proyecto viva en `dev`, lanzalo a mano con:
+#   gh workflow run tls-monitor.yml --ref dev
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tls-monitor
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Check certificate expiry
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify HTTPS, redirect and lifetime
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$HOST" ]; then
+            echo "::error::El secret DEPLOY_HOST no esta configurado."
+            exit 1
+          fi
+
+          echo "Host: $HOST"
+
+          # 1) HTTPS responde y la cadena es valida (curl valida el certificado).
+          https_code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 20 "https://$HOST/")
+          echo "HTTPS / -> $https_code"
+          if [ "$https_code" != "200" ]; then
+            echo "::error::HTTPS devolvio $https_code."
+            exit 1
+          fi
+
+          # 2) HTTP redirige a HTTPS.
+          http_code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 20 "http://$HOST/")
+          echo "HTTP / -> $http_code"
+          if [ "$http_code" != "301" ]; then
+            echo "::error::HTTP no redirige a HTTPS (codigo $http_code)."
+            exit 1
+          fi
+
+          # 3) Vida restante del certificado.
+          end=$(echo | openssl s_client -connect "$HOST:443" 2>/dev/null \
+            | openssl x509 -noout -enddate | cut -d= -f2)
+          end_epoch=$(date -u -d "$end" +%s)
+          now_epoch=$(date -u +%s)
+          days_left=$(( (end_epoch - now_epoch) / 86400 ))
+          echo "Caduca: $end (quedan $days_left dias)"
+
+          {
+            echo "### Certificado TLS"
+            echo ""
+            echo "- Caduca: \`$end\`"
+            echo "- Dias restantes: **$days_left**"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$days_left" -lt 3 ]; then
+            echo "::error::Quedan $days_left dias de certificado. Revisa 'certbot renew' en el Droplet."
+            exit 1
+          fi
