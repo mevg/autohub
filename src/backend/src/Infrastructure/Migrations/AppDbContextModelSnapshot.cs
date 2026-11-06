@@ -22,6 +22,8 @@ namespace AutoHub.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.HasSequence("VehiclePublicReferenceSequence");
+
             modelBuilder.Entity("AutoHub.Domain.Entities.Branding", b =>
                 {
                     b.Property<int>("Id")
@@ -76,6 +78,82 @@ namespace AutoHub.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("branding", (string)null);
+                });
+
+            modelBuilder.Entity("AutoHub.Domain.Entities.Lead", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("ConsentAccepted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("ContactedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(254)
+                        .HasColumnType("character varying(254)");
+
+                    b.Property<string>("IdempotencyKey")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<string>("IpHash")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<string>("Message")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UserAgent")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
+
+                    b.Property<Guid>("VehicleId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email");
+
+                    b.HasIndex("IdempotencyKey")
+                        .IsUnique()
+                        .HasFilter("\"IdempotencyKey\" IS NOT NULL");
+
+                    b.HasIndex("Status", "CreatedAt");
+
+                    b.HasIndex("VehicleId", "CreatedAt");
+
+                    b.ToTable("Leads", (string)null);
                 });
 
             modelBuilder.Entity("AutoHub.Domain.Entities.User", b =>
@@ -159,6 +237,11 @@ namespace AutoHub.Infrastructure.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("PublicReference")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
@@ -182,6 +265,9 @@ namespace AutoHub.Infrastructure.Migrations
 
                     b.HasIndex("CreatedBy");
 
+                    b.HasIndex("PublicReference")
+                        .IsUnique();
+
                     b.HasIndex("Vin")
                         .IsUnique();
 
@@ -193,6 +279,10 @@ namespace AutoHub.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<string>("AltText")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -213,6 +303,17 @@ namespace AutoHub.Infrastructure.Migrations
                     b.HasIndex("VehicleId");
 
                     b.ToTable("VehicleImages", (string)null);
+                });
+
+            modelBuilder.Entity("AutoHub.Domain.Entities.Lead", b =>
+                {
+                    b.HasOne("AutoHub.Domain.Entities.Vehicle", "Vehicle")
+                        .WithMany("Leads")
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Vehicle");
                 });
 
             modelBuilder.Entity("AutoHub.Domain.Entities.Vehicle", b =>
@@ -245,6 +346,8 @@ namespace AutoHub.Infrastructure.Migrations
             modelBuilder.Entity("AutoHub.Domain.Entities.Vehicle", b =>
                 {
                     b.Navigation("Images");
+
+                    b.Navigation("Leads");
                 });
 #pragma warning restore 612, 618
         }

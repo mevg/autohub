@@ -28,7 +28,7 @@ describe('MainLayout', () => {
     const el = fixture.nativeElement as HTMLElement;
     expect(el.textContent).toContain('Test User');
     expect(el.textContent).toContain('Admin');
-    expect(el.querySelector('a[href="/bienvenida"]')?.textContent).toContain('Bienvenida');
+    expect(el.querySelector('a[href="/admin/bienvenida"]')?.textContent).toContain('Bienvenida');
   });
 
   it('toggles sidebar from header button', () => {

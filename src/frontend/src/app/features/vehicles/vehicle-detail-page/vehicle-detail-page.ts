@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { VehiclesService } from '../vehicles.service';
 import { StatusBadge } from '../status-badge';
@@ -8,7 +8,7 @@ import { formatMileage, formatPrice, VehicleDetail, VehicleFormValue } from '../
 
 @Component({
   selector: 'app-vehicle-detail-page',
-  imports: [RouterLink, StatusBadge, VehicleFormDialog],
+  imports: [StatusBadge, VehicleFormDialog],
   templateUrl: './vehicle-detail-page.html',
 })
 export class VehicleDetailPage {
@@ -111,6 +111,6 @@ export class VehicleDetailPage {
   }
 
   protected goBack(): void {
-    void this.router.navigate(['/vehiculos']);
+    void this.router.navigate(['/admin/vehiculos']);
   }
 }

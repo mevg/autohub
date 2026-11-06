@@ -18,8 +18,8 @@ export class MainLayout {
   protected readonly user = this.auth.currentUser;
   protected readonly sidebarOpen = signal(false);
   protected readonly navItems: NavItem[] = [
-    { label: 'Bienvenida', route: '/bienvenida' },
-    { label: 'Vehículos', route: '/vehiculos' },
+    { label: 'Bienvenida', route: '/admin/bienvenida' },
+    { label: 'Vehículos', route: '/admin/vehiculos' },
   ];
 
   protected toggleSidebar(): void {

@@ -15,6 +15,9 @@ public static class InfrastructureDependencyInjection
         services.AddScoped<IBrandingStore, EfBrandingStore>();
         services.AddScoped<IVehicleQueries, DapperVehicleQueries>();
         services.AddScoped<IVehicleStore, EfVehicleStore>();
+        services.AddScoped<IPublicCatalogQueries, DapperPublicCatalogQueries>();
+        services.AddScoped<ILeadStore, EfLeadStore>();
+        services.AddSingleton<IPublicReferenceGenerator, NpgsqlPublicReferenceGenerator>();
         services.AddSingleton<ILocalFileStorage>(sp =>
         {
             var env = sp.GetRequiredService<IWebHostEnvironment>();

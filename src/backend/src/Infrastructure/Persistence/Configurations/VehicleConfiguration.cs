@@ -15,6 +15,13 @@ public class VehicleConfiguration : IEntityTypeConfiguration<Vehicle>
         builder.HasIndex(v => v.Vin)
             .IsUnique();
 
+        builder.Property(v => v.PublicReference)
+            .HasMaxLength(20)
+            .IsRequired();
+
+        builder.HasIndex(v => v.PublicReference)
+            .IsUnique();
+
         builder.Property(v => v.Make)
             .HasMaxLength(50)
             .IsRequired();

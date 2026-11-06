@@ -5,7 +5,8 @@ namespace AutoHub.Application.Features.Vehicles.Commands.CreateVehicle;
 
 public class CreateVehicleCommandHandler(
     IVehicleStore store,
-    IVehicleQueries queries) : IRequestHandler<CreateVehicleCommand, Guid>
+    IVehicleQueries queries,
+    IPublicReferenceGenerator publicReferences) : IRequestHandler<CreateVehicleCommand, Guid>
 {
     public async Task<Guid> Handle(CreateVehicleCommand request, CancellationToken cancellationToken)
     {
@@ -20,6 +21,7 @@ public class CreateVehicleCommandHandler(
         {
             Id = Guid.NewGuid(),
             Vin = vin,
+            PublicReference = await publicReferences.NextAsync(cancellationToken),
             Make = request.Make.Trim(),
             Model = request.Model.Trim(),
             Year = request.Year,

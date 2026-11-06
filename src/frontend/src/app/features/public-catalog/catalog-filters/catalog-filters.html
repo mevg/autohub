@@ -1,0 +1,148 @@
+<section
+  class="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-200/60 sm:p-5"
+  aria-label="Filtros del catálogo"
+>
+  <div class="flex flex-col gap-3 lg:flex-row lg:items-center">
+    <label class="relative flex-1">
+      <span class="sr-only">Buscar vehículos</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path stroke-linecap="round" d="M21 21l-4.3-4.3M10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z" />
+      </svg>
+      <input
+        type="search"
+        placeholder="Buscar por marca, modelo o referencia…"
+        [ngModel]="search()"
+        (ngModelChange)="onSearch($event)"
+        class="w-full rounded-xl border border-gray-300 bg-white py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
+      />
+    </label>
+
+    <label class="flex items-center gap-2 text-sm text-gray-600">
+      <span class="shrink-0">Ordenar</span>
+      <select
+        [ngModel]="sort()"
+        (ngModelChange)="onSort($event)"
+        class="w-full rounded-xl border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30 lg:w-auto"
+      >
+        @for (option of sortOptions; track option.value) {
+          <option [value]="option.value">{{ option.label }}</option>
+        }
+      </select>
+    </label>
+  </div>
+
+  <details class="group mt-4 border-t border-gray-100 pt-4">
+    <summary
+      class="flex cursor-pointer list-none items-center justify-between text-sm font-semibold text-gray-700"
+    >
+      <span>Más filtros</span>
+      <span class="text-xs font-medium text-gray-500 group-open:hidden">Mostrar</span>
+      <span class="hidden text-xs font-medium text-gray-500 group-open:inline">Ocultar</span>
+    </summary>
+
+    <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <label class="flex flex-col gap-1 text-xs font-medium text-gray-600">
+        Marca
+        <select
+          [ngModel]="make()"
+          (ngModelChange)="onMake($event)"
+          class="rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm font-normal text-gray-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
+        >
+          <option value="">Todas las marcas</option>
+          @for (make of facets().makes; track make.value) {
+            <option [value]="make.value">{{ make.value }} ({{ make.count }})</option>
+          }
+        </select>
+      </label>
+
+      <label class="flex flex-col gap-1 text-xs font-medium text-gray-600">
+        Modelo
+        <select
+          [ngModel]="model()"
+          (ngModelChange)="onModel($event)"
+          class="rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm font-normal text-gray-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
+        >
+          <option value="">Todos los modelos</option>
+          @for (model of facets().models; track model.value) {
+            <option [value]="model.value">{{ model.value }} ({{ model.count }})</option>
+          }
+        </select>
+      </label>
+
+      <label class="flex flex-col gap-1 text-xs font-medium text-gray-600">
+        Año desde
+        <input
+          type="number"
+          inputmode="numeric"
+          min="1900"
+          [max]="facets().maxYear ?? 2099"
+          placeholder="{{ facets().minYear ?? 1900 }}"
+          [ngModel]="yearFrom()"
+          (ngModelChange)="yearFrom.set($event === null || $event === '' ? null : +$event)"
+          (change)="emit()"
+          class="rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm font-normal text-gray-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
+        />
+      </label>
+
+      <label class="flex flex-col gap-1 text-xs font-medium text-gray-600">
+        Año hasta
+        <input
+          type="number"
+          inputmode="numeric"
+          min="1900"
+          [max]="facets().maxYear ?? 2099"
+          placeholder="{{ facets().maxYear ?? 2099 }}"
+          [ngModel]="yearTo()"
+          (ngModelChange)="yearTo.set($event === null || $event === '' ? null : +$event)"
+          (change)="emit()"
+          class="rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm font-normal text-gray-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
+        />
+      </label>
+
+      <label class="flex flex-col gap-1 text-xs font-medium text-gray-600">
+        Precio desde
+        <input
+          type="number"
+          inputmode="numeric"
+          min="0"
+          placeholder="{{ facets().minPrice ?? 0 }}"
+          [ngModel]="priceFrom()"
+          (ngModelChange)="priceFrom.set($event === null || $event === '' ? null : +$event)"
+          (change)="emit()"
+          class="rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm font-normal text-gray-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
+        />
+      </label>
+
+      <label class="flex flex-col gap-1 text-xs font-medium text-gray-600">
+        Precio hasta
+        <input
+          type="number"
+          inputmode="numeric"
+          min="0"
+          placeholder="{{ facets().maxPrice ?? 0 }}"
+          [ngModel]="priceTo()"
+          (ngModelChange)="priceTo.set($event === null || $event === '' ? null : +$event)"
+          (change)="emit()"
+          class="rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm font-normal text-gray-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
+        />
+      </label>
+
+      <div class="flex items-end">
+        <button
+          type="button"
+          (click)="clear()"
+          class="rounded-xl border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+        >
+          Limpiar filtros
+        </button>
+      </div>
+    </div>
+  </details>
+</section>

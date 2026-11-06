@@ -31,7 +31,7 @@ export class LoginPage {
     this.auth.login(credentials).subscribe({
       next: () => {
         this.pending.set(false);
-        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/bienvenida';
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/admin/bienvenida';
         void this.router.navigateByUrl(returnUrl);
       },
       error: (err: unknown) => {

@@ -44,7 +44,7 @@ export class VehiclesPage {
       next: (res) => {
         this.saving.set(false);
         this.showDialog.set(false);
-        void this.router.navigate(['/vehiculos', res.id]);
+        void this.router.navigate(['/admin/vehiculos', res.id]);
       },
       error: () => {
         this.saving.set(false);

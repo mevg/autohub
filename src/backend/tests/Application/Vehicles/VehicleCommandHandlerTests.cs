@@ -13,6 +13,7 @@ public class VehicleCommandHandlerTests
 {
     private readonly IVehicleStore _store = Substitute.For<IVehicleStore>();
     private readonly IVehicleQueries _queries = Substitute.For<IVehicleQueries>();
+    private readonly IPublicReferenceGenerator _publicReferences = Substitute.For<IPublicReferenceGenerator>();
 
     private static CreateVehicleCommand CreateCmd() => new(
         "1HGCM82633A123456", "Toyota", "Corolla", 2022, 250000m, 15000,
@@ -38,15 +39,17 @@ public class VehicleCommandHandlerTests
     public async Task Create_with_new_vin_adds_vehicle()
     {
         _queries.VinExistsAsync(Arg.Any<string>(), null, Arg.Any<CancellationToken>()).Returns(false);
+        _publicReferences.NextAsync(Arg.Any<CancellationToken>()).Returns("AH-000001");
         Vehicle? added = null;
         _store.Add(Arg.Do<Vehicle>(v => added = v));
 
-        var id = await new CreateVehicleCommandHandler(_store, _queries)
+        var id = await new CreateVehicleCommandHandler(_store, _queries, _publicReferences)
             .Handle(CreateCmd(), CancellationToken.None);
 
         added.Should().NotBeNull();
         added!.Id.Should().Be(id);
         added.Vin.Should().Be("1HGCM82633A123456");
+        added.PublicReference.Should().Be("AH-000001");
         added.Status.Should().Be(VehicleStatus.Available);
         await _store.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -56,7 +59,7 @@ public class VehicleCommandHandlerTests
     {
         _queries.VinExistsAsync(Arg.Any<string>(), null, Arg.Any<CancellationToken>()).Returns(true);
 
-        var act = () => new CreateVehicleCommandHandler(_store, _queries)
+        var act = () => new CreateVehicleCommandHandler(_store, _queries, _publicReferences)
             .Handle(CreateCmd(), CancellationToken.None);
 
         await act.Should().ThrowAsync<DuplicateVinException>();

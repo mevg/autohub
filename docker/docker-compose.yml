@@ -29,6 +29,10 @@ services:
       JwtSettings__Audience: ${JWT_AUDIENCE:-AutoHubClient}
       SeedAdmin__Email: ${SEED_ADMIN_EMAIL:-admin@autohub.local}
       SeedAdmin__Password: ${SEED_ADMIN_PASSWORD:-Admin123!}
+      SeedCatalog__Enabled: ${SEED_CATALOG_ENABLED:-true}
+      WhatsApp__Enabled: ${WHATSAPP_ENABLED:-true}
+      WhatsApp__PhoneNumber: ${WHATSAPP_PHONE_NUMBER:-5215555555555}
+      Leads__IpHashSalt: ${LEADS_IP_HASH_SALT:-dev-only-salt-change-me}
       Cors__AllowedOrigins__0: http://localhost:8080
       # El proxy nginx no termina TLS: redirigir a https rompería /api.
       HttpsRedirection__Enabled: "false"

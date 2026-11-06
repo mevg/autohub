@@ -1,0 +1,86 @@
+<div class="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:py-10">
+  <section
+    class="page-enter overflow-hidden rounded-3xl bg-gray-900 px-6 py-10 text-white shadow-sm sm:px-10"
+  >
+    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary-light">
+      Catálogo disponible
+    </p>
+    <h1 class="mt-3 max-w-2xl text-3xl font-black leading-tight sm:text-4xl">
+      Encuentra tu próximo auto con confianza
+    </h1>
+    <p class="mt-3 max-w-xl text-sm text-gray-300 sm:text-base">
+      Inventario verificado, información clara y contacto directo con el equipo de ventas.
+    </p>
+  </section>
+
+  <div class="mt-6">
+    <app-catalog-filters
+      [filters]="service.filters()"
+      [facets]="service.facets()"
+      (changed)="onFilters($event)"
+    />
+  </div>
+
+  @if (service.error()) {
+    <div
+      role="alert"
+      class="mt-4 rounded-xl bg-danger/10 px-4 py-3 text-sm font-medium text-danger"
+    >
+      {{ service.error() }}
+      <button type="button" (click)="service.load()" class="ml-2 font-bold underline">
+        Reintentar
+      </button>
+    </div>
+  }
+
+  <div class="mt-5 flex items-center justify-between gap-3">
+    <p class="text-sm text-gray-600" aria-live="polite">
+      @if (service.loading()) {
+        Cargando vehículos…
+      } @else {
+        {{ service.totalCount() }} vehículo{{ service.totalCount() === 1 ? '' : 's' }} disponible{{
+          service.totalCount() === 1 ? '' : 's'
+        }}
+      }
+    </p>
+    @if (service.loading() && service.items().length > 0) {
+      <span class="text-xs font-medium text-gray-500">Actualizando…</span>
+    }
+  </div>
+
+  <div class="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    @if (service.loading() && service.items().length === 0) {
+      @for (i of [0, 1, 2, 3, 4, 5]; track i) {
+        <app-vehicle-card-skeleton />
+      }
+    } @else if (service.items().length === 0) {
+      <div class="col-span-full rounded-2xl bg-white p-10 text-center shadow-sm">
+        <p class="text-4xl">🔎</p>
+        <p class="mt-2 font-semibold text-gray-900">No encontramos autos con esos filtros</p>
+        <p class="mt-1 text-sm text-gray-500">
+          Prueba con otra búsqueda o limpia los filtros para ver todo el inventario.
+        </p>
+        <button
+          type="button"
+          (click)="onFilters(emptyFilters)"
+          class="mt-4 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-gray-900 transition hover:bg-primary-dark"
+        >
+          Ver todos los autos
+        </button>
+      </div>
+    } @else {
+      @for (vehicle of service.items(); track vehicle.id; let i = $index) {
+        <app-public-vehicle-card [vehicle]="vehicle" [index]="i" />
+      }
+    }
+  </div>
+
+  <div class="mt-6">
+    <app-pagination
+      [page]="service.page()"
+      [totalPages]="service.totalPages()"
+      [totalCount]="service.totalCount()"
+      (pageChange)="onPage($event)"
+    />
+  </div>
+</div>

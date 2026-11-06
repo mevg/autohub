@@ -12,6 +12,9 @@ public class VehicleImageConfiguration : IEntityTypeConfiguration<VehicleImage>
             .HasMaxLength(500)
             .IsRequired();
 
+        builder.Property(i => i.AltText)
+            .HasMaxLength(200);
+
         builder.Property(i => i.DisplayOrder)
             .IsRequired();
 

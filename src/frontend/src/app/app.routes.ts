@@ -3,12 +3,32 @@ import { authGuard, guestGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
   {
+    path: '',
+    loadComponent: () =>
+      import('./features/public-catalog/public-layout/public-layout').then((m) => m.PublicLayout),
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        loadComponent: () =>
+          import('./features/public-catalog/catalog-page/catalog-page').then((m) => m.CatalogPage),
+      },
+      {
+        path: 'vehiculos/:id',
+        loadComponent: () =>
+          import('./features/public-catalog/vehicle-detail/vehicle-detail').then(
+            (m) => m.PublicVehicleDetailPage,
+          ),
+      },
+    ],
+  },
+  {
     path: 'login',
     canActivate: [guestGuard],
     loadComponent: () => import('./features/auth/login/login-page').then((m) => m.LoginPage),
   },
   {
-    path: '',
+    path: 'admin',
     canActivate: [authGuard],
     loadComponent: () => import('./layout/main-layout').then((m) => m.MainLayout),
     children: [

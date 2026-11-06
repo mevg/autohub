@@ -31,9 +31,9 @@ export const authGuard: CanActivateFn = async (
   return true;
 };
 
-/** Inverso para /login: con sesión válida → /bienvenida (o returnUrl). */
+/** Inverso para /login: con sesión válida → /admin/bienvenida (o returnUrl). */
 export const guestGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
-  return auth.hasValidToken() ? router.createUrlTree(['/bienvenida']) : true;
+  return auth.hasValidToken() ? router.createUrlTree(['/admin/bienvenida']) : true;
 };
