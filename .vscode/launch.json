@@ -2,6 +2,12 @@
   // Requiere: .NET 10 SDK, Node 22 + pnpm, Postgres local
   // (docker o Host=localhost:5432 con autohub_db/autohub_user).
   // El front usa proxy.conf.json -> http://localhost:5116 (ver src/frontend/proxy.conf.json).
+  //
+  // Docker: tasks "docker: up" (stack completo) o "docker: up api+db (debug)".
+  // Para depurar el backend en contenedor se necesita la extensión Docker
+  // (pickRemoteProcess) y la imagen debug (vsdbg), que levanta el task de debug.
+  // Flujo debug: 1) task "docker: up api+db (debug)", 2) F5
+  // "Docker: debug (API en contenedor + Angular local)".
   "version": "0.2.0",
   "configurations": [
     {
@@ -14,6 +20,20 @@
       "cwd": "${workspaceFolder}/src/backend/src/Api",
       "env": { "ASPNETCORE_ENVIRONMENT": "Development" },
       "launchBrowser": { "enabled": false }
+    },
+    {
+      "name": ".NET: attach backend (Docker)",
+      "type": "coreclr",
+      "request": "attach",
+      "processId": "${command:pickRemoteProcess}",
+      "pipeTransport": {
+        "pipeProgram": "docker",
+        "pipeArgs": ["exec", "-i", "autohub-backend-1"],
+        "pipeCwd": "${workspaceFolder}",
+        "quoteArgs": true,
+        "debuggerPath": "/vsdbg/vsdbg"
+      },
+      "sourceFileMap": { "/src/backend": "${workspaceFolder}/src/backend" }
     },
     {
       "name": "Angular: serve + debug",
@@ -29,6 +49,10 @@
     {
       "name": "Full stack: API + Angular",
       "configurations": [".NET: AutoHub API", "Angular: serve + debug"]
+    },
+    {
+      "name": "Docker: debug (API en contenedor + Angular local)",
+      "configurations": [".NET: attach backend (Docker)", "Angular: serve + debug"]
     }
   ]
 }

@@ -4,7 +4,7 @@ import { AuthService } from '../core/auth/auth.service';
 import { BrandingService } from '../core/branding/branding.service';
 import { environment } from '../../environments/environment';
 import { Header } from './header';
-import { Sidebar } from './sidebar';
+import { NavItem, Sidebar } from './sidebar';
 
 @Component({
   selector: 'app-main-layout',
@@ -17,6 +17,10 @@ export class MainLayout {
   protected readonly version = environment.version;
   protected readonly user = this.auth.currentUser;
   protected readonly sidebarOpen = signal(false);
+  protected readonly navItems: NavItem[] = [
+    { label: 'Bienvenida', route: '/admin/bienvenida' },
+    { label: 'Vehículos', route: '/admin/vehiculos' },
+  ];
 
   protected toggleSidebar(): void {
     this.sidebarOpen.update((v) => !v);

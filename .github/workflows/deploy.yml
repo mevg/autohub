@@ -1,0 +1,33 @@
+name: Deploy development
+
+on:
+  push:
+    branches: [dev]
+  workflow_dispatch:
+
+concurrency:
+  group: dev-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to Droplet (dev)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull latest dev and rebuild containers
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script_stop: true
+          command_timeout: 45m
+          script: |
+            set -euo pipefail
+            cd /home/deploy/app
+            git fetch --prune origin dev
+            git reset --hard origin/dev
+            cd docker
+            docker compose down
+            docker compose up -d --build
+            docker image prune -f

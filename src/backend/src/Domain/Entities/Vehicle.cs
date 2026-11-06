@@ -4,6 +4,7 @@ public class Vehicle
 {
     public Guid Id { get; set; }
     public string Vin { get; set; } = string.Empty;
+    public string PublicReference { get; set; } = string.Empty;
     public string Make { get; set; } = string.Empty;
     public string Model { get; set; } = string.Empty;
     public int Year { get; set; }
@@ -20,6 +21,6 @@ public class Vehicle
     // Relaciones
     public User Creator { get; set; } = null!;
     public ICollection<VehicleImage> Images { get; set; } = new List<VehicleImage>();
+    public ICollection<Lead> Leads { get; set; } = new List<Lead>();
     // public ICollection<SocialPost> SocialPosts { get; set; } = new List<SocialPost>();
-    // public ICollection<Lead> Leads { get; set; } = new List<Lead>();
 }

@@ -64,6 +64,36 @@
       "group": "test",
       "presentation": { "reveal": "always" },
       "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "docker: up",
+      "detail": "Levanta el stack completo (postgres + backend + frontend) en segundo plano.",
+      "type": "shell",
+      "command": "docker compose -f docker/docker-compose.yml up -d --build",
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "reveal": "always" }
+    },
+    {
+      "label": "docker: up api+db (debug)",
+      "detail": "Solo postgres + backend con imagen debug (vsdbg). El front corre local con pnpm.",
+      "type": "shell",
+      "command": "docker compose -f docker/docker-compose.yml -f docker/docker-compose.debug.yml up -d --build postgres backend",
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "reveal": "always" }
+    },
+    {
+      "label": "docker: down",
+      "type": "shell",
+      "command": "docker compose -f docker/docker-compose.yml -f docker/docker-compose.debug.yml down",
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "reveal": "silent" }
+    },
+    {
+      "label": "docker: logs backend",
+      "type": "shell",
+      "command": "docker logs -f autohub-backend-1",
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "reveal": "always" }
     }
   ]
 }

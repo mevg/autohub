@@ -1,15 +1,17 @@
 import { inject } from '@angular/core';
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { AuthService } from './auth.service';
 
 /**
  * Adjunta el Bearer a /api/* y saca a /login ante 401 (red de seguridad del
- * check proactivo de expiración). No intercepta el propio login para no
- * interferir con el mensaje de "Credenciales inválidas".
+ * check proactivo de expiración), conservando la ruta para volver tras el login.
+ * No intercepta el propio login para no interferir con "Credenciales inválidas".
  */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
+  const router = inject(Router);
 
   const token = auth.getToken();
   const withAuth =
@@ -24,7 +26,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         err.status === 401 &&
         !req.url.endsWith('/api/auth/login')
       ) {
-        auth.logout();
+        auth.logout(false);
+        void router.navigate(['/login'], {
+          queryParams: { returnUrl: router.url, reason: 'expired' },
+        });
       }
       return throwError(() => err);
     }),

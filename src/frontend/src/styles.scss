@@ -68,3 +68,46 @@
   --color-danger: var(--brand-danger);
   --color-danger-dark: var(--brand-danger-dark);
 }
+
+/* Animaciones de entrada (solo CSS, sin librerías). */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.card-enter {
+  animation: fade-up 0.35s ease-out both;
+}
+
+.page-enter {
+  animation: fade-up 0.25s ease-out both;
+}
+
+.dialog-enter > div {
+  animation: pop-in 0.22s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-enter,
+  .page-enter,
+  .dialog-enter > div {
+    animation: none;
+  }
+}

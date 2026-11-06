@@ -15,12 +15,22 @@ public class VehicleConfiguration : IEntityTypeConfiguration<Vehicle>
         builder.HasIndex(v => v.Vin)
             .IsUnique();
 
+        builder.Property(v => v.PublicReference)
+            .HasMaxLength(20)
+            .IsRequired();
+
+        builder.HasIndex(v => v.PublicReference)
+            .IsUnique();
+
         builder.Property(v => v.Make)
             .HasMaxLength(50)
             .IsRequired();
 
         builder.Property(v => v.Model)
             .HasMaxLength(50)
+            .IsRequired();
+
+        builder.Property(v => v.Year)
             .IsRequired();
 
         builder.Property(v => v.Price)
@@ -33,6 +43,12 @@ public class VehicleConfiguration : IEntityTypeConfiguration<Vehicle>
 
         builder.Property(v => v.FuelType)
             .HasMaxLength(30)
+            .IsRequired();
+
+        builder.Property(v => v.Description)
+            .HasMaxLength(1000);
+
+        builder.Property(v => v.CreatedAt)
             .IsRequired();
 
         builder.Property(v => v.Status)

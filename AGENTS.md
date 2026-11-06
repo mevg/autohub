@@ -4,6 +4,22 @@ Monorepo with two independent stacks. No root workspace: root `package.json` is 
 - Backend: `src/backend/` — .NET 10 clean architecture (`Api` / `Application` / `Domain` / `Infrastructure`).
 - Frontend: `src/frontend/` — Angular 22 standalone app (`src/main.ts` → `app/app.ts`), SCSS + Tailwind.
 
+## Branch Workflow (MANDATORY — do this BEFORE writing any code)
+
+1. **Check the current branch first.** Run `git branch --show-current` before starting any task.
+2. **`main` and `dev` are protected.** Never commit, push, or develop directly on them. Do not touch them.
+3. **Always branch off `dev`.** Create a feature branch using the format `feat/{feature-name}` (lower-case, hyphen-separated, e.g. `feat/inventory-stock-alerts`):
+   - `git checkout dev`
+   - `git pull origin dev`
+   - `git checkout -b feat/{feature-name}`
+4. **Do all changes on the feature branch.** Commit there only.
+5. **Open a Pull Request** against `dev` when the work is done:
+   - `git push -u origin feat/{feature-name}`
+   - `gh pr create --base dev --head feat/{feature-name} --title "<type>(<scope>): <subject>" --body "<summary>"`
+6. Do not merge the PR yourself; leave it for review.
+
+If you are on `main` or `dev` when a task starts, stop and create the feature branch first.
+
 ## Engineering Philosophy
 - **Avoid Over-Engineering:** Do not implement design patterns just for the sake of using them. Keep solutions pragmatic and strictly aligned with the actual business needs.
 - **Strict Library Evaluation:** Do not add third-party libraries or extra abstraction layers unless they provide undeniable, immediate value to the specific feature being developed.
@@ -46,5 +62,6 @@ Monorepo with two independent stacks. No root workspace: root `package.json` is 
 
 ## Commits / CI
 
+- **Never commit to `main` or `dev`.** All work happens on a `feat/{feature-name}` branch created from `dev`, then goes through a Pull Request (see **Branch Workflow**).
 - Commitlint enforced via `commit-msg` hook: `type(scope): subject`, subject lower-case. Allowed types: `feat fix docs style refactor perf test chore ci revert`; scopes: `backend frontend core auth inventory deps`.
 - CI is path-filtered per stack (`.github/workflows/backend-ci.yml`, `frontend-ci.yml`). Versioning is GitVersion `ContinuousDelivery` (`GitVersion.yml`); branches `main dev feat/* hotfix/*`.

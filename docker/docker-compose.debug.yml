@@ -1,0 +1,11 @@
+# Override SOLO para depurar el backend en contenedor desde VS Code:
+#   docker compose -f docker-compose.yml -f docker-compose.debug.yml up -d --build postgres backend
+# Cambia la imagen por la que trae vsdbg, publica el 5116 (el proxy.conf del
+# front apunta a http://localhost:5116) y deja Scalar activo (Development).
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.backend.debug
+    ports:
+      - "5116:8080"

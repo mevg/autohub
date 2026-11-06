@@ -1,0 +1,74 @@
+<div class="mx-auto max-w-6xl">
+  <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl font-extrabold text-gray-900">Vehículos</h1>
+      <p class="text-sm text-gray-500">Catálogo del inventario</p>
+    </div>
+    <button
+      type="button"
+      (click)="openDialog()"
+      class="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:scale-[1.03] hover:bg-primary-dark active:scale-95"
+    >
+      + Nuevo vehículo
+    </button>
+  </div>
+
+  <app-vehicle-filters
+    [search]="service.filters().search ?? ''"
+    [status]="service.filters().status ?? ''"
+    (changed)="onFilters($event)"
+  />
+
+  @if (service.error()) {
+    <div
+      role="alert"
+      class="mt-4 rounded-xl bg-danger/10 px-4 py-3 text-sm font-medium text-danger"
+    >
+      {{ service.error() }}
+      <button type="button" (click)="service.load()" class="ml-2 font-bold underline">
+        Reintentar
+      </button>
+    </div>
+  }
+
+  <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+    @if (service.loading() && service.items().length === 0) {
+      @for (i of [0, 1, 2, 3, 4, 5]; track i) {
+        <app-vehicle-card-skeleton />
+      }
+    } @else if (service.items().length === 0) {
+      <div class="col-span-full rounded-2xl bg-white p-10 text-center shadow-sm">
+        <p class="text-4xl">🚗</p>
+        <p class="mt-2 font-semibold text-gray-900">Sin vehículos por aquí</p>
+        <p class="text-sm text-gray-500">Ajusta los filtros o agrega el primero del inventario.</p>
+      </div>
+    } @else {
+      @for (v of service.items(); track v.id; let i = $index) {
+        <app-vehicle-card [vehicle]="v" [index]="i" />
+      }
+    }
+  </div>
+
+  @if (service.loading() && service.items().length > 0) {
+    <p class="pt-3 text-center text-sm text-gray-500" aria-live="polite">Actualizando…</p>
+  }
+
+  <div class="mt-4">
+    <app-pagination
+      [page]="service.page()"
+      [totalPages]="service.totalPages()"
+      [totalCount]="service.totalCount()"
+      (pageChange)="service.load($event)"
+    />
+  </div>
+</div>
+
+@if (showDialog()) {
+  <app-vehicle-form-dialog
+    title="Nuevo vehículo"
+    [pending]="saving()"
+    [error]="saveError()"
+    (save)="onSave($event)"
+    (cancel)="showDialog.set(false)"
+  />
+}

@@ -1,0 +1,62 @@
+# AutoHub local con Docker. Las variables se sobreescriben con un archivo
+# docker/.env (ver .env.example). Los valores por defecto son SOLO para
+# desarrollo local: no usarlos en ningún entorno compartido.
+name: autohub
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-autohub_db}
+      POSTGRES_USER: ${POSTGRES_USER:-autohub_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-autohub_dev_pass}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-autohub_user}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.backend
+    environment:
+      ConnectionStrings__DefaultConnection: Host=postgres;Database=${POSTGRES_DB:-autohub_db};Username=${POSTGRES_USER:-autohub_user};Password=${POSTGRES_PASSWORD:-autohub_dev_pass}
+      JwtSettings__Secret: ${JWT_SECRET:-AutoHub_Dev_Only_2026_Change_Me_0123456789abcdef}
+      JwtSettings__Issuer: ${JWT_ISSUER:-AutoHubAPI}
+      JwtSettings__Audience: ${JWT_AUDIENCE:-AutoHubClient}
+      SeedAdmin__Email: ${SEED_ADMIN_EMAIL:-admin@autohub.local}
+      SeedAdmin__Password: ${SEED_ADMIN_PASSWORD:-Admin123!}
+      SeedCatalog__Enabled: ${SEED_CATALOG_ENABLED:-true}
+      WhatsApp__Enabled: ${WHATSAPP_ENABLED:-true}
+      WhatsApp__PhoneNumber: ${WHATSAPP_PHONE_NUMBER:-5215555555555}
+      Leads__IpHashSalt: ${LEADS_IP_HASH_SALT:-dev-only-salt-change-me}
+      Cors__AllowedOrigins__0: http://localhost:8080
+      # El proxy nginx no termina TLS: redirigir a https rompería /api.
+      HttpsRedirection__Enabled: "false"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      # Persiste las fotos subidas (wwwroot/vehicles, wwwroot/branding).
+      - backend-uploads:/app/wwwroot
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.frontend
+      args:
+        VERSION: ${VERSION:-0.0.0}
+    ports:
+      # Solo accesible desde el host: nginx del Droplet publica el 80.
+      - "127.0.0.1:8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  backend-uploads:

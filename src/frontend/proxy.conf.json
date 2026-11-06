@@ -2,5 +2,17 @@
   "/api": {
     "target": "http://localhost:5116",
     "secure": false
+  },
+  "/vehicles": {
+    "target": "http://localhost:5116",
+    "secure": false
+  },
+  "/branding": {
+    "target": "http://localhost:5116",
+    "secure": false
+  },
+  "/seed": {
+    "target": "http://localhost:5116",
+    "secure": false
   }
 }

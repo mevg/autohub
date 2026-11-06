@@ -1,0 +1,18 @@
+# Contextos de docker/Dockerfile.* (raíz del repo).
+.git/
+.vscode/
+.husky/
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.angular/
+**/.angular/
+**/bin/
+**/obj/
+logs/
+**/logs/
+server-*.log
+# Uploads de desarrollo: en el contenedor se guardan en el volumen.
+src/backend/src/Api/wwwroot/
+*.md

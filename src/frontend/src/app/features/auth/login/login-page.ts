@@ -23,6 +23,7 @@ export class LoginPage {
   });
   protected readonly pending = signal(false);
   protected readonly error = signal<string | null>(null);
+  protected readonly expiredNotice = this.route.snapshot.queryParamMap.get('reason') === 'expired';
 
   protected onSubmit(credentials: { email: string; password: string }): void {
     this.pending.set(true);
@@ -30,7 +31,7 @@ export class LoginPage {
     this.auth.login(credentials).subscribe({
       next: () => {
         this.pending.set(false);
-        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/bienvenida';
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/admin/bienvenida';
         void this.router.navigateByUrl(returnUrl);
       },
       error: (err: unknown) => {

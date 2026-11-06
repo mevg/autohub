@@ -15,7 +15,7 @@ export class Sidebar {
   appName = input.required<string>();
   logoUrl = input.required<string>();
   version = input.required<string>();
-  items = input<NavItem[]>([{ label: 'Bienvenida', route: '/bienvenida' }]);
+  items = input<NavItem[]>([{ label: 'Bienvenida', route: '/admin/bienvenida' }]);
   open = input(false);
   closed = output<void>();
 }

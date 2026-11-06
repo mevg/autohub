@@ -1,4 +1,5 @@
 using AutoHub.Application.Features.Settings.Commands.RemoveBanner;
+using AutoHub.Application.Features.Vehicles;
 using AutoHub.Application.Features.Settings.Commands.UpdateBranding;
 using AutoHub.Application.Features.Settings.Commands.UploadBrandAsset;
 using AutoHub.Application.Features.Settings.Queries.GetBranding;
@@ -55,7 +56,10 @@ public static class SettingsEndpoints
             try
             {
                 var result = await sender.Send(
-                    new UploadBrandAssetCommand(slot, file.ContentType, buffer.ToArray()), ct);
+                    new UploadBrandAssetCommand(
+                        slot,
+                        ImageContentTypeSniffer.Sniff(file.ContentType, buffer.ToArray()),
+                        buffer.ToArray()), ct);
                 return Results.Ok(result);
             }
             catch (ValidationException ex)

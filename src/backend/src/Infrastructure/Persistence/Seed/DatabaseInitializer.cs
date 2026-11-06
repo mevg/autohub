@@ -35,24 +35,26 @@ public static class DatabaseInitializer
             return;
         }
 
-        if (await db.Users.AnyAsync(u => u.Email == email))
+        var admin = await db.Users.SingleOrDefaultAsync(u => u.Email == email);
+        if (admin is null)
         {
-            return;
+            var hasher = provider.GetRequiredService<IPasswordHasher>();
+            admin = new User
+            {
+                Id = Guid.NewGuid(),
+                Email = email,
+                PasswordHash = hasher.HashPassword(password),
+                FullName = "Administrator",
+                Role = UserRole.Admin,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            };
+            db.Users.Add(admin);
+            await db.SaveChangesAsync();
+
+            logger.LogInformation("Usuario admin inicial creado: {Email}", email);
         }
 
-        var hasher = provider.GetRequiredService<IPasswordHasher>();
-        db.Users.Add(new User
-        {
-            Id = Guid.NewGuid(),
-            Email = email,
-            PasswordHash = hasher.HashPassword(password),
-            FullName = "Administrator",
-            Role = UserRole.Admin,
-            IsActive = true,
-            CreatedAt = DateTime.UtcNow
-        });
-        await db.SaveChangesAsync();
-
-        logger.LogInformation("Usuario admin inicial creado: {Email}", email);
+        await CatalogSeeder.SeedAsync(db, provider, configuration, admin.Id, logger);
     }
 }

@@ -35,4 +35,36 @@ Content-Type: application/json
   "primaryDark": "#45B0E5"
 }
 
+### Listar vehículos (requiere auth)
+GET {{AutoHub.Api_HostAddress}}/api/vehicles?page=1&pageSize=20
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Crear vehículo (requiere auth)
+# @name createVehicle
+POST {{AutoHub.Api_HostAddress}}/api/vehicles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "vin": "1HGCM82633A123456",
+  "make": "Toyota",
+  "model": "Corolla",
+  "year": 2022,
+  "price": 250000,
+  "mileage": 15000,
+  "transmission": "Automática",
+  "fuelType": "Gasolina",
+  "description": "Seminuevo en excelente estado"
+}
+
+###
+
+@vehicleId = {{createVehicle.response.body.$.id}}
+
+### Detalle de vehículo (requiere auth)
+GET {{AutoHub.Api_HostAddress}}/api/vehicles/{{vehicleId}}
+Authorization: Bearer {{token}}
+Accept: application/json
+
 ###

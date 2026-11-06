@@ -42,7 +42,7 @@ describe('LoginPage', () => {
     (el.querySelector('button[type="submit"]') as HTMLButtonElement).click();
   }
 
-  it('navigates to /bienvenida on success', () => {
+  it('navigates to /admin/bienvenida on success', () => {
     const nav = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
     fillAndSubmit();
     httpMock.expectOne('/api/auth/login').flush({
@@ -52,7 +52,7 @@ describe('LoginPage', () => {
       role: 'Admin',
       token: fakeJwt(FUTURE),
     });
-    expect(nav).toHaveBeenCalledWith('/bienvenida');
+    expect(nav).toHaveBeenCalledWith('/admin/bienvenida');
   });
 
   it('shows error on 401', () => {
