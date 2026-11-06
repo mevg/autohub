@@ -69,7 +69,7 @@ jobs:
 
     - name: Build Production Bundle
       working-directory: ${{ env.WORKING_DIRECTORY }}
-      run: pnpm run build -- --configuration production
+      run: pnpm run build --configuration=production
 
     - name: Upload Production Artifacts
       uses: actions/upload-artifact@v4
